@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Multicomplete Demo</title>
+		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui-1.8.22.custom.min.js"></script>
+		<script type="text/javascript" >
+			/* MULTICOMPLETE (MC)
+			*
+			* Multicomplete turns a jQuery UI autocomplete into a multiple-selection input (useful for things like tags)
+			* The structure of each MC is a <ul> tag styled to look like a text input.
+			* Inside that <ul> is a <li> with an unstyled <input> in it.  That input receives user input and functions like a normal autocomplete.
+			* When the user chooses something from the autocomplete, it creates a new <li> immediately
+			* before the text input and clears the text input of its contents. That new <li> includes the selection and a hidden input with its value.
+			* Dupe-checking: if you select something that's already been selected, it ignores it.
+			*
+			*/
+			
+			$(document).ready(function() {
+			
+					//When the user clicks anywhere inside the MC box...
+					$("ul.tags").click(function(e){
+						
+						//If they clicked on an anchor, that means they clicked one of the 'X' deletion controls
+						if (e.target.tagName == 'A') {
+							//remove the item
+							$(e.target).parent().remove();
+						}
+						
+						//Focus the newAuthor input
+						$('input#new',this).focus();
+						
+					});
+			
+					//When the user presses a key in the input portion of the MAC
+					$("ul.tags input#new").keydown(function(event){
+						
+						//If it's the backspace key and the input is empty, delete the closest box
+						if (event.which == 8 && $(this).val() == "") {
+							$(this).parent().prev("li.tag").remove();
+							
+						}
+					});
+					
+					//Some tags from Smashing Magazine for demo purposes
+					var demoTags = [
+						{value: "1", label: "ActionScript"},
+						{value: "2", label: "Adsense"},
+						{value: "3", label: "advertising"},
+						{value: "5", label: "animation"},
+						{value: "6", label: "Apps"},
+						{value: "7", label: "Art"},
+						{value: "8", label: "ASCII"},
+						{value: "9", label: "Avatars"},
+						{value: "10", label: "Backgrounds"},
+						{value: "11", label: "Best Of"},
+						{value: "12", label: "Best practices"},
+						{value: "13", label: "blogging"},
+						{value: "14", label: "Books"},
+						{value: "15", label: "branding"},
+						{value: "16", label: "Browsers"},
+						{value: "17", label: "brushes"},
+						{value: "18", label: "Business"},
+						{value: "19", label: "Business cards"},
+						{value: "20", label: "buttons"},
+						{value: "21", label: "Calendars"},
+						{value: "22", label: "Calligraphy"},
+						{value: "23", label: "cartoons"},
+						{value: "24", label: "carts"}
+					];	
+					
+					//Initialize the autocomplete
+					$("input#new").autocomplete({
+						source: demoTags,
+						select: function(event,ui){
+							tagValue = ui.item.value;
+							tagLabel = ui.item.label;
+
+							if (!$("li.tag input[value='"+tagValue+"']").length) {
+								var newTag = '<li class="tag">'+tagLabel+'<a class="tagRemove">X</a><input type="hidden" value="'+tagValue+'" name="tags[]"></li>';
+								$("input#new").parent().before(newTag);
+							}
+							
+							$(this).val("");
+							return false;
+						}
+					});
+					
+					$("input#new").focus();
+			});
+		</script>
+		<style type="text/css">
+			body { font-family: "Trebuchet MS", Tahoma, Verdana, Arial, sans-serif; font-size: 12px; margin: 60px; }
+			div.demo { width: 720px; background-color: #999; margin: 0px auto; padding: 20px; border-radius: 6px; -webkit-border-radius: 6px; -moz-border-radius: 6px; }
+			div.explanation { font-weight: bold; color: #fff; padding-bottom: 6px; text-align: left; font-size: 13px; }
+			ul.tags { list-style: none; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; border: 1px solid #a6a6a6; font-size: 12px; width: 720px; overflow: auto; background-color: #fff; margin: 0px; padding: 0px; padding: 3px; }
+			ul.tags li { float: left; display: block; margin: 2px 6px 2px 0px; }
+			ul.tags li.tag { padding: 4px 6px; border: 1px solid #d3d3d3; background-color: #e6e6e6; font-weight: normal; color: #333; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; }
+			ul.tags li.tag:hover { cursor: pointer; border: 1px solid #999999; background-color: #dadada; color: #212121;	}
+			ul.tags li.tag a.tagRemove { padding-left: 4px; cursor: pointer; font-weight: bold; text-decoration: none; color: #000; }
+			ul.tags li.tag a.tagRemove:hover { color: #444; }
+			input#new { font-family: "Trebuchet MS", Tahoma, Verdana, Arial, sans-serif; border: 0px; background-color: transparent; font-size: 12px; outline: 0px; width: 140px; margin: 0px 0px 0px 4px; padding: 5px 0px; }			
+		</style>
+	</head>
+	<body>
+		<div class="demo">
+			<div class="explanation">Try typing 'a', 'b', or 'c'</div>
+			<ul class="tags">
+				<li><input id="new" title="type &quot;a&quot;" /></li>
+			</ul>
+			<div style="clear: both;"></div>
+		</div>
+	</body>
+</html>
+
+
